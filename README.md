@@ -302,3 +302,18 @@ cd credit-risk-analytics
 **4. Launch Power BI Dashboard**
 - Open `Credit_Risk_Analysis.pbix` using Power BI Desktop.
 - Update data source credentials to point to your local PostgreSQL instance or CSV path if prompted.
+
+---
+
+## 👤 Müəllif
+
+**Data Analytics Portfolio Layihəsi**
+
+Bu layihə GitHub portfolio üçün hazırlanmış professional Data Analytics nümunəsidir.
+
+[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/USERNAME)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/nihat-rzaquluzade-624b332a9/)
+
+---
+
+<div align="center">
