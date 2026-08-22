@@ -1,4 +1,4 @@
-# 📊 End-to-End Credit Risk & Portfolio Performance Analytics
+# 📊 End-to-End Credit Risk & Portfolio Analytics Pipeline
 
 ![Power BI](https://img.shields.io/badge/Power_BI-F2C811?style=for-the-badge&logo=powerbi&logoColor=black)
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
@@ -6,15 +6,85 @@
 ![Pandas](https://img.shields.io/badge/Pandas-150458?style=for-the-badge&logo=pandas&logoColor=white)
 
 ## 📌 Executive Summary
-This enterprise-grade **End-to-End Data Analytics Pipeline** evaluates credit risk exposure, borrower default probabilities, and portfolio concentration for a $304.6M consumer loan portfolio. By processing raw Kaggle data through Python ETL pipelines, staging it in PostgreSQL, executing targeted SQL risk queries, and building a dynamic Power BI application, this project delivers actionable intelligence to optimize credit underwriting strategies.
+This project is a comprehensive **End-to-End Data Analytics Pipeline** designed to assess credit portfolio risk, identify critical default hotspots, and provide actionable intelligence for financial risk management. By extracting raw data from Kaggle, transforming it via Python, loading it into PostgreSQL, and designing an enterprise-grade interactive dashboard in Power BI, this project uncovers the precise demographic and behavioral drivers of loan defaults.
 
 ---
 
-## 🏗️ Technical Pipeline & Data Architecture
+## 🎯 Business Problem & Objectives
+Financial institutions face significant revenue loss due to non-performing loans (NPLs) and defaults. The objective of this project is to:
+1. **Identify High-Risk Segments:** Pinpoint which demographic attributes (Age, Homeownership) and financial indicators (Risk Tiers, Historical Defaults) drive the highest default rates.
+2. **Optimize Underwriting Strategies:** Evaluate the performance of different loan grades (A-G) and loan intents to adjust future interest rates and approval criteria.
+3. **Develop a Monitoring Tool:** Create a dynamic, self-service Power BI application that allows risk executives to seamlessly drill down from high-level portfolio KPIs to granular risk heatmaps.
+
+---
+
+## 🏗️ Tech Stack & End-to-End Architecture
+
+The project follows a robust ETL and analytical pipeline:
+
+1. **Data Source:** Kaggle Credit Risk Dataset.
+2. **Data Extraction & Cleaning (Python):** 
+   - Handled missing data via median imputation (`person_emp_length`, `loan_int_rate` by grade).
+   - Engineered new features using `Pandas`: `age_group` (18-25, 26-35, 36-50, 50+) and `loan_risk_tier` (Aşağı, Orta, Yüksək).
+3. **Database Management (PostgreSQL):** 
+   - Loaded the cleaned dataset using `SQLAlchemy`.
+   - Executed advanced SQL queries to validate aggregations and extract preliminary analytical insights.
+4. **Data Visualization (Power BI):** 
+   - Built a localized (Azerbaijani) BI application featuring DAX data modeling, dynamic bookmarks, and conditional formatting.
+
+---
+
+## 🖼️ Interactive Dashboard Features
+
+### 1. Executive Summary View
+Features dynamic KPI cards with embedded **Sparkline trend lines**, providing an immediate pulse on the portfolio's health (Total Loan Amount, Default Rate %, Portfolio Risk %, Avg Interest Rate).
+> ![Executive Overview](images/overview_dashboard.png)
+
+### 2. Deep-Dive Risk Heatmap View (Matrix)
+Utilizes **Dynamic Bookmark Navigation** to seamlessly switch to a 5-tier conditional formatting matrix (0% to 100%). This reveals the cross-sectional risk between Homeownership, Loan Grade, and Age Groups.
+> ![Matrix Heatmap](images/matrix_heatmap_view.png)
+
+### 💡 Core UX Enhancements
+- **Custom Navigation:** Bookmark action buttons to toggle between charts and matrix views without losing filter context.
+- **One-Click Reset:** A dedicated "Reset Slicers" button to instantly clear all applied filters and revert to the baseline portfolio view.
+
+---
+
+## 📊 Analytical SQL Queries 
+
+Prior to visualization, the data was rigorously analyzed in PostgreSQL using 5 core queries (available in `scripts/02_credit_risk_queries.sql`):
+1. **`01_table_inspection.sql`:** Schema verification and data integrity checks.
+2. **`02_portfolio_kpi_summary.sql`:** Calculated core metrics (e.g., establishing the baseline 21.59% default rate).
+3. **`03_default_by_grade_and_intent.sql`:** Grouped default rates by credit scores (A-G) and borrower intent (Medical, Education, Debt Consolidation).
+4. **`04_risk_tier_and_history_analysis.sql`:** Cross-analyzed debt-to-income tiers against historical default records to map severe risk clusters.
+5. **`05_homeownership_age_matrix.sql`:** Investigated the demographic correlation between renting status, youth (18-25), and default likelihood.
+
+---
+
+## 💡 Key Business Insights (Data Findings)
+
+Based on the overall portfolio volume of **$304.62M** and an average default rate of **21.59%**, the following patterns were uncovered:
+
+* **The "Renters" Danger Zone:** Borrowers who rent their homes and fall into lower credit grades (E, F, G) exhibit astronomical default rates ranging from **70% to 87.27%**.
+* **Debt-to-Income is Critical:** The engineered `loan_risk_tier` proved highly predictive. Customers categorized in the **Yüksək Risk (High Risk)** tier default at a rate of **74.81%**, compared to just 13.22% for low-risk borrowers.
+* **Historical Behavior Repeats:** Borrowers with a prior default on record ("Keçmiş Defolt Qeydi = Bəli") carry an overwhelmingly high risk compared to first-time defaulters, validating the necessity of strict historical background checks.
+* **Loan Purpose Dynamics:** Loans taken out for **Debt Consolidation (28.45%)** and **Medical Expenses (26.60%)** hold the highest default ratios, whereas Venture/Investment loans perform significantly better (14.70%).
+
+---
+
+## 🛡️ Strategic Recommendations
+
+1. **Stricter Underwriting for Renters:** Implement tighter debt-to-income caps for non-homeowners, specifically those aged 18-25, as they represent the most volatile demographic.
+2. **Halt Grade F & G Approvals:** The risk heatmap dictates that Grade F and G loans are economically unviable. It is recommended to either cease approvals for these grades or require substantial collateral.
+3. **Restructure Debt Consolidation Products:** Given the high default rate (28.45%), debt consolidation loans should require mandatory financial counseling or co-signers to mitigate exposure.
+4. **Automated Flagging:** Integrate the High-Risk Tier parameters directly into the credit approval API to automatically flag or reject applications exceeding the defined debt-to-income threshold.
+
+---
+
+## 📁 Repository Structure
 
 ```text
-[Kaggle Dataset] ──> [Python / Pandas ETL] ──> [PostgreSQL Database] ──> [SQL Analysis] ──> [Power BI Dashboard]
-ETL & Data Cleaning (Python): Handled missing data via median imputation (person_emp_length and loan_int_rate grouped by loan grade). Engineered categorical feature columns (age_group and loan_risk_tier).Database Staging (PostgreSQL): Loaded cleaned dataset via SQLAlchemy. Structured analytical SQL queries to calculate baseline portfolio KPIs, cross-tabulations, and risk breakpoint metrics.Data Visualization (Power BI): Developed an interactive application localized in Azerbaijani, incorporating custom DAX measures, 5-tier conditional formatting heatmaps, sparkline trends, and bookmark navigation.📊 Empirical SQL Query Results & Findings1. Portfolio Overview & Baseline KPIsThe overall portfolio comprises 31,522 loan applications with an average interest rate of 11.04%. Out of $304.62M total issued capital, $75.03M is currently exposed to default risk, establishing a baseline default rate of 21.59%.MetricOutput ValueTotal Applicants31,522Total Issued Loan Capital$304,621,400.00Capital at Risk (Defaulted Capital)$75,032,850.00Portfolio Default Rate (%)21.59%Average Interest Rate (%)11.04%2. Loan Intent Risk DistributionLoans requested for Debt Consolidation (28.45%) and Medical Expenses (26.60%) represent the highest default rates in the portfolio, indicating that refinancing existing debt or emergency spending carries elevated risk. Venture/Business (14.70%) and Education (16.99%) remain the safest portfolio segments.Loan Purpose (Intent)ApplicantsTotal Volume ($)Avg Interest Rate (%)Default Rate (%)Debt Consolidation5,044$48,820,500.0011.02%28.45%Medical Expenses5,869$54,949,800.0011.08%26.60%Home Improvement3,499$36,568,550.0011.21%25.61%Personal5,346$51,578,250.0011.02%19.51%Education6,246$59,453,450.0010.99%16.99%Venture / Business5,518$53,251,275.0010.99%14.70%3. Credit Scoring Grade Breakpoint AnalysisA major finding in the portfolio is the non-linear jump in default rates between Grade C and Grade D. While Grades A through C exhibit controllable risk (9.56% to 20.31%), Grade D breaches 58.78%, peaking at 98.44% for Grade G.Risk GradeApplicantsAvg Interest Rate (%)Avg Loan Amount ($)Actual Default Rate (%)Risk AssessmentA10,3007.69%$8,606.859.56%Low RiskB10,12111.00%$10,070.8515.97%Low-Moderate RiskC6,30113.21%$9,283.1420.31%Moderate RiskD3,54914.97%$10,890.4158.78%🚨 Severe JumpE95116.49%$12,942.4064.25%High RiskF23617.73%$14,796.0870.34%High RiskG6419.53%$17,195.7098.44%Critical Default4. Cross-Sectional Risk Matrix: Debt Tier x Historical DefaultBorrowers categorized in the High Risk Tier with a prior default record on file (cb_person_default_on_file = 1) experience an overwhelming 83.33% default rate. Conversely, Low Risk borrowers with clean histories default at only 10.17%.Debt Risk TierPrior Default RecordApplicantsCurrent Default Rate (%)Yüksək Risk (High)Bəli (Yes)22283.33% 🚨Yüksək Risk (High)Xeyr (No)83872.55%Orta Risk (Medium)Bəli (Yes)1,90049.26%Orta Risk (Medium)Xeyr (No)7,73430.05%Aşağı Risk (Low)Bəli (Yes)3,49228.38%Aşağı Risk (Low)Xeyr (No)17,33610.17%5. Housing Status x Demographic RiskHomeownership status is the strongest demographic indicator of default. Borrowers who RENT show elevated default rates across all age brackets (29.71% – 35.00%), whereas homeowners (OWN) default at significantly lower rates (5.00% – 7.47%).Housing StatusAge GroupApplicantsDebt-to-Income (%)Default Rate (%)RENT50+16018.36%35.00%RENT18-257,87618.57%32.41%RENT26-356,49017.85%29.77%RENT36-501,48117.69%29.71%MORTGAGE50+9913.07%14.14%MORTGAGE18-255,72415.57%12.70%MORTGAGE26-355,86014.86%12.42%MORTGAGE36-501,33514.55%11.84%OWN18-251,12518.83%7.47%OWN36-5025918.31%6.95%OWN26-3598718.63%6.38%OWN50+2015.15%5.00%🖼️ Interactive Power BI FeaturesDynamic View Switching: Toggle seamlessly between the Executive Summary (Visual Charts) and the Deep-Dive Matrix (5-Tier Heatmap) using custom interactive bookmarks.5-Tier Risk Heatmap: Color-coded matrix scaling from 0% (Emerald Green) to 100% (Crimson Red) to immediately spot severe default clusters.Embedded Sparklines: Integrated micro-area trend lines inside KPI cards to monitor portfolio fluctuations across employment lengths.One-Click Slicer Reset: Dedicated reset action button to immediately clear all applied slicer filters.💡 Strategic Recommendations for Executive LeadershipAutomated Rejection Rule (Hard Cut-off): Implement an automated decision rule in the loan processing engine to reject applications combining High Risk Tier and Prior Default Record (which carry an unsustainable 83.33% default rate).Cease Uncollateralized Grade D–G Issuance: Restructure underwriting policies at Grade D (58.78% default). Cease unsecured lending for Grades E, F, and G unless backed by collateral or high-net-worth guarantors.Debt Consolidation Constraints: Require lower debt-to-income caps and mandatory co-signers for Debt Consolidation requests, particularly when the applicant is a tenant (RENT).Housing-Adjusted Scoring: Incorporate homeownership weighting directly into credit scoring algorithms, as homeowners consistently default under 7.5%, representing the safest lending demographic.📁 Repository StructurePlaintextcredit-risk-analytics/
+credit-risk-analytics/
 │
 ├── data/
 │   ├── credit_risk_dataset.csv           # Raw Kaggle dataset
@@ -25,8 +95,8 @@ ETL & Data Cleaning (Python): Handled missing data via median imputation (person
 │   └── 02_credit_risk_queries.sql         # 5 Analytical PostgreSQL Queries
 │
 ├── images/
-│   ├── overview_dashboard.png            # Dashboard View 1 (Charts)
-│   └── matrix_heatmap_view.png           # Dashboard View 2 (Heatmap Matrix)
+│   ├── overview_dashboard.png            # Dashboard View 1
+│   └── matrix_heatmap_view.png           # Dashboard View 2
 │
-├── Credit_Risk_Analysis.pbix             # Core Power BI Application
-└── README.md                             # Comprehensive Documentation
+├── Credit_Risk_Analysis.pbix             # Core Power BI File
+└── README.md                             # Project Documentation
